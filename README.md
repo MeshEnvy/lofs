@@ -76,9 +76,39 @@ LoFS::rename("/lfs/source.txt", "/sd/dest.txt");
 
 ### Path Prefixes
 
+LoFS uses path prefixes to route operations to the correct filesystem:
+
 - **`/lfs/...`** - Routes to LittleFS (internal flash)
 - **`/sd/...`** - Routes to SD card (if available)
 - **No prefix** - Defaults to LittleFS for backward compatibility
+
+The path prefixes (`/lfs/` and `/sd/`) are string constants that must be used exactly as shown - they are parsed by LoFS to determine which filesystem backend to use.
+
+### LoFS Constants
+
+LoFS provides constants for filesystem type identification:
+
+```cpp
+#include "LoFS.h"
+
+// FilesystemType enum constants
+LoFS::FilesystemType::LFS  // Value: 0 (LittleFS)
+LoFS::FilesystemType::SD    // Value: 1 (SD Card)
+```
+
+These constants are available in the `LoFS::FilesystemType` enum and can be used for type checking or conditional logic when working with filesystems programmatically.
+
+When building paths programmatically:
+
+```cpp
+const char* lfsPath = "/lfs/data/config.txt";
+const char* sdPath = "/sd/data/log.txt";
+
+// Or build paths dynamically
+char path[64];
+snprintf(path, sizeof(path), "%s%s", "/lfs/", "myfile.txt");
+File f = LoFS::open(path, FILE_O_READ);
+```
 
 ### SD Card Availability
 
@@ -130,6 +160,24 @@ All methods are static and can be called directly on the `LoFS` class:
 - **Thread Safety**: All operations use SPI lock for thread safety
 - **Error Handling**: Returns `false` or invalid `File` objects on failure
 - **Memory**: Automatically manages path buffer allocation/deallocation
+
+## Diagnostic Mode
+
+LoFS includes a comprehensive diagnostic test suite that can be enabled by defining `LOFS_PLUGIN_DIAGNOSTICS` during compilation. When enabled, the diagnostic suite runs automatically at plugin initialization and performs extensive testing of all filesystem operations.
+
+The diagnostic mode will:
+
+- **Test filesystem availability** - Verifies LittleFS and SD card detection
+- **Display filesystem space information** - Shows total, used, and free space for both filesystems
+- **Test basic file operations** - Write, read, and existence checks on both filesystems
+- **Test directory operations** - Create and verify directories
+- **Test file size verification** - Validates file sizes across different data sizes (0 bytes to 2KB)
+- **Test cross-filesystem operations** - Verifies copy/move operations between LittleFS and SD card
+- **Test same-filesystem rename** - Validates rename operations within the same filesystem
+- **Test error cases** - Verifies proper handling of invalid paths and missing files
+- **Cleanup test files** - Removes all test files created during diagnostics
+
+All test results are logged to the Meshtastic console/log output. This mode is useful for debugging filesystem issues and verifying that LoFS is working correctly on your hardware platform.
 
 ## License
 
