@@ -153,7 +153,168 @@ void lofs_diagnostics()
     }
     LOG_INFO("");
 
-    // Test 6: File Size Verification
+    // Test 6: Recursive Directory Removal
+    LOG_INFO("--- Test 6: Recursive Directory Removal ---");
+    const char *recursiveTestDirLFS = "/lfs/recursive_test";
+    const char *recursiveTestDirSD = "/sd/recursive_test";
+    
+    // Clean up any existing test directories
+    LoFS::rmdir(recursiveTestDirLFS, true);
+    if (sdAvailable) {
+        LoFS::rmdir(recursiveTestDirSD, true);
+    }
+
+    // Test on LittleFS
+    LOG_INFO("Testing recursive rmdir on LittleFS:");
+    
+    // Create nested directory structure: recursive_test/subdir1/subdir2/file.txt
+    if (LoFS::mkdir(recursiveTestDirLFS)) {
+        LOG_INFO("  Created root directory: %s", recursiveTestDirLFS);
+        
+        const char *subdir1 = "/lfs/recursive_test/subdir1";
+        const char *subdir2 = "/lfs/recursive_test/subdir1/subdir2";
+        const char *testFile1 = "/lfs/recursive_test/file1.txt";
+        const char *testFile2 = "/lfs/recursive_test/subdir1/file2.txt";
+        const char *testFile3 = "/lfs/recursive_test/subdir1/subdir2/file3.txt";
+        
+        // Create subdirectories
+        if (LoFS::mkdir(subdir1)) {
+            LOG_INFO("  Created subdirectory: %s", subdir1);
+            if (LoFS::mkdir(subdir2)) {
+                LOG_INFO("  Created nested subdirectory: %s", subdir2);
+            }
+        }
+        
+        // Create files at different levels
+        File f1 = LoFS::open(testFile1, FILE_O_WRITE);
+        if (f1) {
+            f1.write((const uint8_t *)"File 1 content\n", 15);
+            f1.close();
+            LOG_INFO("  Created file: %s", testFile1);
+        }
+        
+        File f2 = LoFS::open(testFile2, FILE_O_WRITE);
+        if (f2) {
+            f2.write((const uint8_t *)"File 2 content\n", 15);
+            f2.close();
+            LOG_INFO("  Created file: %s", testFile2);
+        }
+        
+        File f3 = LoFS::open(testFile3, FILE_O_WRITE);
+        if (f3) {
+            f3.write((const uint8_t *)"File 3 content\n", 15);
+            f3.close();
+            LOG_INFO("  Created file: %s", testFile3);
+        }
+        
+        // Verify structure exists
+        bool structureExists = LoFS::exists(recursiveTestDirLFS) && 
+                               LoFS::exists(subdir1) && 
+                               LoFS::exists(subdir2) &&
+                               LoFS::exists(testFile1) &&
+                               LoFS::exists(testFile2) &&
+                               LoFS::exists(testFile3);
+        LOG_INFO("  Structure created: %s", structureExists ? "YES" : "NO");
+        
+        // Test that non-recursive rmdir fails on non-empty directory
+        bool nonRecursiveResult = LoFS::rmdir(recursiveTestDirLFS, false);
+        bool stillExists = LoFS::exists(recursiveTestDirLFS);
+        LOG_INFO("  Non-recursive rmdir on non-empty dir: %s (should be FAILED)", nonRecursiveResult ? "SUCCESS" : "FAILED");
+        LOG_INFO("  Directory still exists after non-recursive: %s (should be YES)", stillExists ? "YES" : "NO");
+        
+        // Test recursive rmdir
+        bool recursiveResult = LoFS::rmdir(recursiveTestDirLFS, true);
+        bool removed = !LoFS::exists(recursiveTestDirLFS);
+        LOG_INFO("  Recursive rmdir: %s", recursiveResult ? "SUCCESS" : "FAILED");
+        LOG_INFO("  Directory removed: %s (should be YES)", removed ? "YES" : "NO");
+        
+        // Verify all files and subdirectories are gone
+        bool allRemoved = !LoFS::exists(recursiveTestDirLFS) && 
+                          !LoFS::exists(subdir1) && 
+                          !LoFS::exists(subdir2) &&
+                          !LoFS::exists(testFile1) &&
+                          !LoFS::exists(testFile2) &&
+                          !LoFS::exists(testFile3);
+        LOG_INFO("  All files and subdirectories removed: %s (should be YES)", allRemoved ? "YES" : "NO");
+    }
+    
+    // Test on SD card
+    if (sdAvailable) {
+        LOG_INFO("Testing recursive rmdir on SD Card:");
+        
+        if (LoFS::mkdir(recursiveTestDirSD)) {
+            LOG_INFO("  Created root directory: %s", recursiveTestDirSD);
+            
+            const char *subdir1 = "/sd/recursive_test/subdir1";
+            const char *subdir2 = "/sd/recursive_test/subdir1/subdir2";
+            const char *testFile1 = "/sd/recursive_test/file1.txt";
+            const char *testFile2 = "/sd/recursive_test/subdir1/file2.txt";
+            const char *testFile3 = "/sd/recursive_test/subdir1/subdir2/file3.txt";
+            
+            // Create subdirectories
+            if (LoFS::mkdir(subdir1)) {
+                LOG_INFO("  Created subdirectory: %s", subdir1);
+                if (LoFS::mkdir(subdir2)) {
+                    LOG_INFO("  Created nested subdirectory: %s", subdir2);
+                }
+            }
+            
+            // Create files at different levels
+            File f1 = LoFS::open(testFile1, FILE_O_WRITE);
+            if (f1) {
+                f1.write((const uint8_t *)"File 1 content\n", 15);
+                f1.close();
+                LOG_INFO("  Created file: %s", testFile1);
+            }
+            
+            File f2 = LoFS::open(testFile2, FILE_O_WRITE);
+            if (f2) {
+                f2.write((const uint8_t *)"File 2 content\n", 15);
+                f2.close();
+                LOG_INFO("  Created file: %s", testFile2);
+            }
+            
+            File f3 = LoFS::open(testFile3, FILE_O_WRITE);
+            if (f3) {
+                f3.write((const uint8_t *)"File 3 content\n", 15);
+                f3.close();
+                LOG_INFO("  Created file: %s", testFile3);
+            }
+            
+            // Verify structure exists
+            bool structureExists = LoFS::exists(recursiveTestDirSD) && 
+                                   LoFS::exists(subdir1) && 
+                                   LoFS::exists(subdir2) &&
+                                   LoFS::exists(testFile1) &&
+                                   LoFS::exists(testFile2) &&
+                                   LoFS::exists(testFile3);
+            LOG_INFO("  Structure created: %s", structureExists ? "YES" : "NO");
+            
+            // Test that non-recursive rmdir fails on non-empty directory
+            bool nonRecursiveResult = LoFS::rmdir(recursiveTestDirSD, false);
+            bool stillExists = LoFS::exists(recursiveTestDirSD);
+            LOG_INFO("  Non-recursive rmdir on non-empty dir: %s (should be FAILED)", nonRecursiveResult ? "SUCCESS" : "FAILED");
+            LOG_INFO("  Directory still exists after non-recursive: %s (should be YES)", stillExists ? "YES" : "NO");
+            
+            // Test recursive rmdir
+            bool recursiveResult = LoFS::rmdir(recursiveTestDirSD, true);
+            bool removed = !LoFS::exists(recursiveTestDirSD);
+            LOG_INFO("  Recursive rmdir: %s", recursiveResult ? "SUCCESS" : "FAILED");
+            LOG_INFO("  Directory removed: %s (should be YES)", removed ? "YES" : "NO");
+            
+            // Verify all files and subdirectories are gone
+            bool allRemoved = !LoFS::exists(recursiveTestDirSD) && 
+                              !LoFS::exists(subdir1) && 
+                              !LoFS::exists(subdir2) &&
+                              !LoFS::exists(testFile1) &&
+                              !LoFS::exists(testFile2) &&
+                              !LoFS::exists(testFile3);
+            LOG_INFO("  All files and subdirectories removed: %s (should be YES)", allRemoved ? "YES" : "NO");
+        }
+    }
+    LOG_INFO("");
+
+    // Test 7: File Size Verification
     LOG_INFO("--- Test 6: File Size Verification ---");
     const char *sizeTestFileLFS = "/lfs/size_test.dat";
     const char *sizeTestFileSD = "/sd/size_test.dat";
@@ -219,8 +380,8 @@ void lofs_diagnostics()
     }
     LOG_INFO("");
 
-    // Test 7: Cross-Filesystem Operations (Copy)
-    LOG_INFO("--- Test 7: Cross-Filesystem Operations ---");
+    // Test 8: Cross-Filesystem Operations (Copy)
+    LOG_INFO("--- Test 8: Cross-Filesystem Operations ---");
     if (sdAvailable) {
         const char *sourceFile = "/lfs/cross_test_source.txt";
         const char *destFileSD = "/sd/cross_test_dest.txt";
@@ -297,8 +458,8 @@ void lofs_diagnostics()
     }
     LOG_INFO("");
 
-    // Test 8: Same-Filesystem Rename
-    LOG_INFO("--- Test 8: Same-Filesystem Rename ---");
+    // Test 9: Same-Filesystem Rename
+    LOG_INFO("--- Test 9: Same-Filesystem Rename ---");
     const char *oldNameLFS = "/lfs/old_name.txt";
     const char *newNameLFS = "/lfs/new_name.txt";
 
@@ -353,8 +514,8 @@ void lofs_diagnostics()
     }
     LOG_INFO("");
 
-    // Test 9: Error Cases
-    LOG_INFO("--- Test 9: Error Cases ---");
+    // Test 10: Error Cases
+    LOG_INFO("--- Test 10: Error Cases ---");
     // Test invalid path (no prefix)
     File invalidFile = LoFS::open("no_prefix.txt", FILE_O_READ);
     LOG_INFO("Invalid path (no prefix): %s", invalidFile ? "OPENED (unexpected)" : "REJECTED (expected)");
@@ -374,8 +535,8 @@ void lofs_diagnostics()
     LOG_INFO("Invalid prefix: %s (should be REJECTED)", invalidPrefix ? "OPENED" : "REJECTED");
     LOG_INFO("");
 
-    // Test 10: Cleanup Test Files
-    LOG_INFO("--- Test 10: Cleanup ---");
+    // Test 11: Cleanup Test Files
+    LOG_INFO("--- Test 11: Cleanup ---");
     const char *cleanupFiles[] = {
         "/lfs/test_file.txt",
         "/lfs/test_dir",

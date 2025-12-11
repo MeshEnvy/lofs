@@ -3,6 +3,7 @@
 #include "configuration.h"
 #include <string.h>
 #include <stdlib.h>
+#include <string>
 
 #if defined(HAS_SDCARD) && !defined(SDCARD_USE_SOFT_SPI)
 #include <SD.h>
@@ -464,8 +465,76 @@ bool LoFS::rename(const char *oldfilepath, const char *newfilepath)
     return result;
 }
 
-bool LoFS::rmdir(const char *filepath)
+bool LoFS::rmdir(const char *filepath, bool recursive)
 {
+    if (!exists(filepath)) {
+        return true; // Already doesn't exist, consider it success
+    }
+
+    // If recursive, first remove all contents
+    if (recursive) {
+        // Use LoFS::open to get a File object that handles prefix correctly
+        File dir = open(filepath, FILE_O_READ);
+        if (!dir) {
+            return false;
+        }
+
+        if (!dir.isDirectory()) {
+            dir.close();
+            // If it's not a directory, try removing as a file
+            return remove(filepath);
+        }
+
+        bool result = true;
+        
+        // Recursively remove all files and subdirectories
+        while (true) {
+            File file = dir.openNextFile();
+            if (!file) {
+                break;
+            }
+            
+            // Get the name from file.name() - this might be full path or just filename
+            std::string pathFromFile = file.name();
+            bool isDir = file.isDirectory();
+            file.close();
+            
+            // Always construct full path from parent directory to ensure correctness
+            // Extract just the filename/entry name (after last /)
+            size_t lastSlash = pathFromFile.rfind('/');
+            std::string entryName = (lastSlash != std::string::npos) ? pathFromFile.substr(lastSlash + 1) : pathFromFile;
+            
+            // Skip "." and ".." entries
+            if (entryName == "." || entryName == "..") {
+                continue;
+            }
+            
+            // Build full path: filepath/entryName
+            char fullPathBuf[256];
+            snprintf(fullPathBuf, sizeof(fullPathBuf), "%s/%s", filepath, entryName.c_str());
+            std::string fullPath = fullPathBuf;
+            
+            // Recursively remove subdirectories, or remove files
+            if (isDir) {
+                // Recursively remove subdirectory
+                if (!rmdir(fullPath.c_str(), true)) {
+                    result = false;
+                }
+            } else {
+                // Remove file
+                if (!remove(fullPath.c_str())) {
+                    result = false;
+                }
+            }
+        }
+        dir.close();
+
+        if (!result) {
+            return false;
+        }
+    }
+
+    // Now remove the directory itself (or if non-recursive, just try to remove empty directory)
     char *strippedPath = nullptr;
     FSType fsType = parsePath(filepath, &strippedPath);
 

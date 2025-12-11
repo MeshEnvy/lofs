@@ -86,17 +86,19 @@ The path prefixes (`/lfs/` and `/sd/`) are string constants that must be used ex
 
 ### LoFS Constants
 
-LoFS provides constants for filesystem type identification:
+LoFS provides an enum for filesystem type identification:
 
 ```cpp
 #include "LoFS.h"
 
-// FilesystemType enum constants
-LoFS::FilesystemType::LFS  // Value: 0 (LittleFS)
-LoFS::FilesystemType::SD    // Value: 1 (SD Card)
+// Filesystem type enum for use with LoDB and other plugins
+LoFS::FSType::AUTO     // Auto-select: use SD if available, otherwise LFS
+LoFS::FSType::LFS      // LittleFS (internal flash)
+LoFS::FSType::SD       // SD Card (if available)
+LoFS::FSType::INVALID  // Invalid filesystem type (internal use)
 ```
 
-These constants are available in the `LoFS::FilesystemType` enum and can be used for type checking or conditional logic when working with filesystems programmatically.
+The `FSType` enum can be used directly to specify which filesystem to use when initializing plugins like LoDB.
 
 When building paths programmatically:
 
@@ -150,7 +152,7 @@ All methods are static and can be called directly on the `LoFS` class:
 - `LoFS::mkdir(filepath)` - Create directory (with parent directories)
 - `LoFS::remove(filepath)` - Delete a file
 - `LoFS::rename(oldpath, newpath)` - Rename/move file (works across filesystems)
-- `LoFS::rmdir(filepath)` - Remove directory
+- `LoFS::rmdir(filepath, recursive=false)` - Remove directory (recursively if recursive=true)
 - `LoFS::isSDCardAvailable()` - Check SD card availability
 
 ## Implementation Details

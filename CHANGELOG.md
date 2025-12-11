@@ -7,9 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.0.0] - 2025-01-XX
-
-### Major
+### Minor
+- Added recursive directory removal support to `LoFS::rmdir()` with optional `recursive` parameter
 - Initial release of LoFS (LittleFS + SD card File System)
 - Unified filesystem interface for LittleFS and SD card
 - Path-based routing with `/lfs/` and `/sd/` prefixes

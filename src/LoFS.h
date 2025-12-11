@@ -103,9 +103,10 @@ class LoFS
     /**
      * @brief Remove a directory
      * @param filepath Path with prefix
+     * @param recursive If true, recursively remove directory and all contents
      * @return true if successful
      */
-    static bool rmdir(const char *filepath);
+    static bool rmdir(const char *filepath, bool recursive = false);
 
     /**
      * @brief Check if SD card is available (compile-time and runtime check)
@@ -138,15 +139,16 @@ class LoFS
     static uint64_t freeBytes(const char *filepath);
 
     /**
-     * @brief Filesystem type constants for specifying which filesystem to use
+     * @brief Filesystem type enum for specifying which filesystem to use
      */
-    enum FilesystemType {
-        LFS = 0,  ///< LittleFS (internal flash)
-        SD = 1    ///< SD Card (if available)
+    enum class FSType : int {
+        AUTO = -1,  ///< Auto-select: use SD if available, otherwise LFS
+        LFS = 0,    ///< LittleFS (internal flash)
+        SD = 1,     ///< SD Card (if available)
+        INVALID     ///< Invalid filesystem type (internal use)
     };
 
   private:
-    enum class FSType { LFS, SD, INVALID };
 
     /**
      * @brief Parse path prefix and return filesystem type and stripped path
