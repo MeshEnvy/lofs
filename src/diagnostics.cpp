@@ -9,21 +9,21 @@ void lofs_diagnostics()
 
     // Test 1: Filesystem Availability
     LOG_INFO("--- Test 1: Filesystem Availability ---");
-    bool lfsAvailable = true; // LittleFS should always be available if FSCom is defined
+    bool lfsAvailable = true; // Internal filesystem should always be available if FSCom is defined
     bool sdAvailable = LoFS::isSDCardAvailable();
-    LOG_INFO("LittleFS available: %s", lfsAvailable ? "YES" : "NO");
+    LOG_INFO("Internal filesystem available: %s", lfsAvailable ? "YES" : "NO");
     LOG_INFO("SD Card available: %s", sdAvailable ? "YES" : "NO");
     LOG_INFO("");
 
     // Test 2: Filesystem Space Information
     LOG_INFO("--- Test 2: Filesystem Space Information ---");
     {
-        uint64_t lfsTotal = LoFS::totalBytes("/lfs");
-        uint64_t lfsUsed = LoFS::usedBytes("/lfs");
-        uint64_t lfsFree = LoFS::freeBytes("/lfs");
-        LOG_INFO("LittleFS - Total: %lu bytes (%.2f KB, %.2f MB)", (uint32_t)lfsTotal, lfsTotal / 1024.0f, lfsTotal / (1024.0f * 1024.0f));
-        LOG_INFO("LittleFS - Used:  %lu bytes (%.2f KB, %.2f MB)", (uint32_t)lfsUsed, lfsUsed / 1024.0f, lfsUsed / (1024.0f * 1024.0f));
-        LOG_INFO("LittleFS - Free:  %lu bytes (%.2f KB, %.2f MB)", (uint32_t)lfsFree, lfsFree / 1024.0f, lfsFree / (1024.0f * 1024.0f));
+        uint64_t lfsTotal = LoFS::totalBytes("/internal");
+        uint64_t lfsUsed = LoFS::usedBytes("/internal");
+        uint64_t lfsFree = LoFS::freeBytes("/internal");
+        LOG_INFO("Internal filesystem - Total: %lu bytes (%.2f KB, %.2f MB)", (uint32_t)lfsTotal, lfsTotal / 1024.0f, lfsTotal / (1024.0f * 1024.0f));
+        LOG_INFO("Internal filesystem - Used:  %lu bytes (%.2f KB, %.2f MB)", (uint32_t)lfsUsed, lfsUsed / 1024.0f, lfsUsed / (1024.0f * 1024.0f));
+        LOG_INFO("Internal filesystem - Free:  %lu bytes (%.2f KB, %.2f MB)", (uint32_t)lfsFree, lfsFree / 1024.0f, lfsFree / (1024.0f * 1024.0f));
     }
 
     if (sdAvailable) {
@@ -36,9 +36,9 @@ void lofs_diagnostics()
     }
     LOG_INFO("");
 
-    // Test 3: Basic File Operations - LittleFS
-    LOG_INFO("--- Test 3: Basic File Operations (LittleFS) ---");
-    const char *testFileLFS = "/lfs/test_file.txt";
+    // Test 3: Basic File Operations - Internal filesystem
+    LOG_INFO("--- Test 3: Basic File Operations (Internal filesystem) ---");
+    const char *testFileLFS = "/internal/test_file.txt";
     const char *testContent = "Hello from LoFS test! This is test data.\n";
     size_t testContentLen = strlen(testContent);
 
@@ -126,10 +126,10 @@ void lofs_diagnostics()
 
     // Test 5: Directory Operations
     LOG_INFO("--- Test 5: Directory Operations ---");
-    const char *testDirLFS = "/lfs/test_dir";
+    const char *testDirLFS = "/internal/test_dir";
     const char *testDirSD = "/sd/test_dir";
 
-    // Create directory on LittleFS
+    // Create directory on internal filesystem
     if (LoFS::mkdir(testDirLFS)) {
         LOG_INFO("Created directory: %s", testDirLFS);
     } else {
@@ -164,18 +164,18 @@ void lofs_diagnostics()
         LoFS::rmdir(recursiveTestDirSD, true);
     }
 
-    // Test on LittleFS
-    LOG_INFO("Testing recursive rmdir on LittleFS:");
+    // Test on internal filesystem
+    LOG_INFO("Testing recursive rmdir on internal filesystem:");
     
     // Create nested directory structure: recursive_test/subdir1/subdir2/file.txt
     if (LoFS::mkdir(recursiveTestDirLFS)) {
         LOG_INFO("  Created root directory: %s", recursiveTestDirLFS);
         
-        const char *subdir1 = "/lfs/recursive_test/subdir1";
-        const char *subdir2 = "/lfs/recursive_test/subdir1/subdir2";
-        const char *testFile1 = "/lfs/recursive_test/file1.txt";
-        const char *testFile2 = "/lfs/recursive_test/subdir1/file2.txt";
-        const char *testFile3 = "/lfs/recursive_test/subdir1/subdir2/file3.txt";
+        const char *subdir1 = "/internal/recursive_test/subdir1";
+        const char *subdir2 = "/internal/recursive_test/subdir1/subdir2";
+        const char *testFile1 = "/internal/recursive_test/file1.txt";
+        const char *testFile2 = "/internal/recursive_test/subdir1/file2.txt";
+        const char *testFile3 = "/internal/recursive_test/subdir1/subdir2/file3.txt";
         
         // Create subdirectories
         if (LoFS::mkdir(subdir1)) {
@@ -321,8 +321,8 @@ void lofs_diagnostics()
     const size_t testSizes[] = {0, 1, 10, 100, 512, 1024, 2048};
     const size_t numSizes = sizeof(testSizes) / sizeof(testSizes[0]);
 
-    // Test on LittleFS
-    LOG_INFO("Testing file sizes on LittleFS:");
+    // Test on internal filesystem
+    LOG_INFO("Testing file sizes on internal filesystem:");
     for (size_t i = 0; i < numSizes; i++) {
         if (LoFS::exists(sizeTestFileLFS)) {
             LoFS::remove(sizeTestFileLFS);
@@ -383,12 +383,12 @@ void lofs_diagnostics()
     // Test 8: Cross-Filesystem Operations (Copy)
     LOG_INFO("--- Test 8: Cross-Filesystem Operations ---");
     if (sdAvailable) {
-        const char *sourceFile = "/lfs/cross_test_source.txt";
+        const char *sourceFile = "/internal/cross_test_source.txt";
         const char *destFileSD = "/sd/cross_test_dest.txt";
-        const char *destFileLFS = "/lfs/cross_test_dest.txt";
+        const char *destFileLFS = "/internal/cross_test_dest.txt";
         const char *crossTestContent = "This file will be copied across filesystems!\n";
 
-        // Create source file on LittleFS
+        // Create source file on internal filesystem
         if (LoFS::exists(sourceFile)) {
             LoFS::remove(sourceFile);
         }
@@ -396,10 +396,10 @@ void lofs_diagnostics()
         if (src) {
             src.write((const uint8_t *)crossTestContent, strlen(crossTestContent));
             src.close();
-            LOG_INFO("Created source file on LittleFS: %s", sourceFile);
+            LOG_INFO("Created source file on internal filesystem: %s", sourceFile);
         }
 
-        // Copy from LittleFS to SD using rename (which performs copy+delete)
+        // Copy from internal filesystem to SD using rename (which performs copy+delete)
         if (LoFS::exists(destFileSD)) {
             LoFS::remove(destFileSD);
         }
@@ -478,7 +478,7 @@ void lofs_diagnostics()
         LoFS::remove(newNameLFS);
     }
     bool renameOk = LoFS::rename(oldNameLFS, newNameLFS);
-    LOG_INFO("Rename on LittleFS: %s", renameOk ? "SUCCESS" : "FAILED");
+        LOG_INFO("Rename on internal filesystem: %s", renameOk ? "SUCCESS" : "FAILED");
     LOG_INFO("  Old file exists: %s (should be NO)", LoFS::exists(oldNameLFS) ? "YES" : "NO");
     LOG_INFO("  New file exists: %s (should be YES)", LoFS::exists(newNameLFS) ? "YES" : "NO");
 
@@ -521,7 +521,7 @@ void lofs_diagnostics()
     LOG_INFO("Invalid path (no prefix): %s", invalidFile ? "OPENED (unexpected)" : "REJECTED (expected)");
 
     // Test non-existent file
-    bool nonExistentExists = LoFS::exists("/lfs/nonexistent_file_12345.txt");
+    bool nonExistentExists = LoFS::exists("/internal/nonexistent_file_12345.txt");
     LOG_INFO("Non-existent file check: %s (should be NO)", nonExistentExists ? "YES" : "NO");
 
     // Test SD path when SD not available
@@ -538,8 +538,8 @@ void lofs_diagnostics()
     // Test 11: Cleanup Test Files
     LOG_INFO("--- Test 11: Cleanup ---");
     const char *cleanupFiles[] = {
-        "/lfs/test_file.txt",
-        "/lfs/test_dir",
+        "/internal/test_file.txt",
+        "/internal/test_dir",
         "/sd/test_file.txt",
         "/sd/test_dir",
     };

@@ -82,14 +82,14 @@ LoFS::FSType LoFS::parsePath(const char *filepath, char *strippedPath, size_t bu
         return FSType::INVALID;
     }
 
-    // Check for /lfs/ prefix
-    if (strncmp(filepath, "/lfs/", 5) == 0) {
-        size_t len = strlen(filepath + 5);
+    // Check for /internal/ prefix
+    if (strncmp(filepath, "/internal/", 10) == 0) {
+        size_t len = strlen(filepath + 10);
         if (len + 1 > bufferSize) {
             return FSType::INVALID;
         }
-        strcpy(strippedPath, filepath + 5);
-        // Ensure leading slash for LittleFS
+        strcpy(strippedPath, filepath + 10);
+        // Ensure leading slash for internal filesystem
         if (strippedPath[0] != '/') {
             memmove(strippedPath + 1, strippedPath, len + 1);
             strippedPath[0] = '/';
@@ -115,7 +115,7 @@ LoFS::FSType LoFS::parsePath(const char *filepath, char *strippedPath, size_t bu
         return FSType::SD;
     }
 
-    // Default to LittleFS if no prefix (backward compatibility)
+    // Default to internal filesystem if no prefix (backward compatibility)
     size_t len = strlen(filepath);
     if (len + 1 > bufferSize) {
         return FSType::INVALID;
