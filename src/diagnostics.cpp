@@ -1,10 +1,8 @@
-#include "LofsTestModule.h"
 #include "LoFS.h"
-#include "MeshService.h"
-#include "configuration.h"
+#include "DebugConfiguration.h"
 #include <string.h>
 
-LofsTestModule::LofsTestModule() : MeshModule("lofs-test")
+void lofs_diagnostics()
 {
     LOG_INFO("=== LoFS Comprehensive Test Suite ===");
     LOG_INFO("");
@@ -403,6 +401,3 @@ LofsTestModule::LofsTestModule() : MeshModule("lofs-test")
     LOG_INFO("=== Test Suite Complete ===");
     LOG_INFO("All tests finished. Check logs above for detailed results.");
 }
-
-LofsTestModule *lofsTestModule;
-
