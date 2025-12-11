@@ -142,8 +142,8 @@ class LoFS
      * @brief Filesystem type enum for specifying which filesystem to use
      */
     enum class FSType : int {
-        AUTO = -1,  ///< Auto-select: use SD if available, otherwise LFS
-        LFS = 0,    ///< Internal filesystem (onboard flash via FSCommon)
+        AUTO = -1,  ///< Auto-select: use SD if available, otherwise INTERNAL
+        INTERNAL = 0,    ///< Internal filesystem (onboard flash via FSCommon)
         SD = 1,     ///< SD Card (if available)
         INVALID     ///< Invalid filesystem type (internal use)
     };

@@ -6,7 +6,7 @@ LoFS (LittleFS + SD card File System) provides a unified API that routes file op
 
 ## Features
 
-- **Unified API** - Same interface for both LittleFS and SD card
+- **Unified API** - Same interface for both internal filesystem and SD card
 - **Path-based routing** - Use `/internal/` prefix for internal filesystem, `/sd/` prefix for SD card
 - **Cross-filesystem operations** - Copy and move files between filesystems transparently
 - **Backward compatible** - Paths without prefix default to internal filesystem
@@ -93,7 +93,7 @@ LoFS provides an enum for filesystem type identification:
 
 // Filesystem type enum for use with LoDB and other plugins
 LoFS::FSType::AUTO     // Auto-select: use SD if available, otherwise internal filesystem
-LoFS::FSType::LFS      // Internal filesystem (onboard flash via FSCommon)
+LoFS::FSType::INTERNAL      // Internal filesystem (onboard flash via FSCommon)
 LoFS::FSType::SD       // SD Card (if available)
 LoFS::FSType::INVALID  // Invalid filesystem type (internal use)
 ```

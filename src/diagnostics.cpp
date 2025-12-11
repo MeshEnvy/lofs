@@ -155,7 +155,7 @@ void lofs_diagnostics()
 
     // Test 6: Recursive Directory Removal
     LOG_INFO("--- Test 6: Recursive Directory Removal ---");
-    const char *recursiveTestDirLFS = "/lfs/recursive_test";
+    const char *recursiveTestDirLFS = "/internal/recursive_test";
     const char *recursiveTestDirSD = "/sd/recursive_test";
     
     // Clean up any existing test directories
@@ -316,7 +316,7 @@ void lofs_diagnostics()
 
     // Test 7: File Size Verification
     LOG_INFO("--- Test 6: File Size Verification ---");
-    const char *sizeTestFileLFS = "/lfs/size_test.dat";
+    const char *sizeTestFileLFS = "/internal/size_test.dat";
     const char *sizeTestFileSD = "/sd/size_test.dat";
     const size_t testSizes[] = {0, 1, 10, 100, 512, 1024, 2048};
     const size_t numSizes = sizeof(testSizes) / sizeof(testSizes[0]);
@@ -404,7 +404,7 @@ void lofs_diagnostics()
             LoFS::remove(destFileSD);
         }
         bool renameResult = LoFS::rename(sourceFile, destFileSD);
-        LOG_INFO("Cross-filesystem rename (LFS->SD): %s", renameResult ? "SUCCESS" : "FAILED");
+        LOG_INFO("Cross-filesystem rename (INTERNAL->SD): %s", renameResult ? "SUCCESS" : "FAILED");
 
         // Verify destination exists and source is gone
         bool sourceExists = LoFS::exists(sourceFile);
@@ -425,7 +425,7 @@ void lofs_diagnostics()
             }
         }
 
-        // Test reverse: SD to LittleFS
+        // Test reverse: SD to internal filesystem
         if (LoFS::exists(sourceFile)) {
             LoFS::remove(sourceFile);
         }
@@ -439,7 +439,7 @@ void lofs_diagnostics()
             LoFS::remove(destFileLFS);
         }
         renameResult = LoFS::rename(sourceFile, destFileLFS);
-        LOG_INFO("Cross-filesystem rename (SD->LFS): %s", renameResult ? "SUCCESS" : "FAILED");
+        LOG_INFO("Cross-filesystem rename (SD->INTERNAL): %s", renameResult ? "SUCCESS" : "FAILED");
 
         sourceExists = LoFS::exists(sourceFile);
         destExists = LoFS::exists(destFileLFS);
@@ -460,8 +460,8 @@ void lofs_diagnostics()
 
     // Test 9: Same-Filesystem Rename
     LOG_INFO("--- Test 9: Same-Filesystem Rename ---");
-    const char *oldNameLFS = "/lfs/old_name.txt";
-    const char *newNameLFS = "/lfs/new_name.txt";
+    const char *oldNameLFS = "/internal/old_name.txt";
+    const char *newNameLFS = "/internal/new_name.txt";
 
     // Create test file
     if (LoFS::exists(oldNameLFS)) {

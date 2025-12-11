@@ -94,7 +94,7 @@ LoFS::FSType LoFS::parsePath(const char *filepath, char *strippedPath, size_t bu
             memmove(strippedPath + 1, strippedPath, len + 1);
             strippedPath[0] = '/';
         }
-        return FSType::LFS;
+        return FSType::INTERNAL;
     }
 
     // Check for /sd/ prefix
@@ -121,7 +121,7 @@ LoFS::FSType LoFS::parsePath(const char *filepath, char *strippedPath, size_t bu
         return FSType::INVALID;
     }
     strcpy(strippedPath, filepath);
-    return FSType::LFS;
+    return FSType::INTERNAL;
 }
 
 LoFS::FSType LoFS::parsePath(const char *filepath, char **strippedPath)
@@ -169,7 +169,7 @@ File LoFS::open(const char *filepath, uint8_t mode)
     } else
 #endif
     {
-        // LittleFS - handle platform-specific mode conversion
+        // Internal filesystem - handle platform-specific mode conversion
         concurrency::LockGuard g(spiLock);
 #if defined(ARCH_ESP32) || defined(ARCH_RP2040) || defined(ARCH_PORTDUINO)
         // ESP32/RP2040: Convert uint8_t mode to string mode
@@ -216,7 +216,7 @@ File LoFS::open(const char *filepath, const char *mode)
     } else
 #endif
     {
-        // LittleFS - handle platform-specific mode
+        // Internal filesystem - handle platform-specific mode
         concurrency::LockGuard g(spiLock);
 #if defined(ARCH_ESP32) || defined(ARCH_RP2040) || defined(ARCH_PORTDUINO)
         // ESP32/RP2040: Use string mode directly
@@ -254,7 +254,7 @@ bool LoFS::exists(const char *filepath)
     } else
 #endif
     {
-        // LittleFS
+        // Internal filesystem
         concurrency::LockGuard g(spiLock);
         result = FSCom.exists(strippedPath);
     }
@@ -284,7 +284,7 @@ bool LoFS::mkdir(const char *filepath)
     } else
 #endif
     {
-        // LittleFS
+        // Internal filesystem
         concurrency::LockGuard g(spiLock);
         result = FSCom.mkdir(strippedPath);
     }
@@ -314,7 +314,7 @@ bool LoFS::remove(const char *filepath)
     } else
 #endif
     {
-        // LittleFS
+        // Internal filesystem
         concurrency::LockGuard g(spiLock);
         result = FSCom.remove(strippedPath);
     }
@@ -351,7 +351,7 @@ bool LoFS::rename(const char *oldfilepath, const char *newfilepath)
         } else
 #endif
         {
-            // LittleFS
+            // Internal filesystem
             concurrency::LockGuard g(spiLock);
             result = FSCom.rename(oldStripped, newStripped);
         }
@@ -554,7 +554,7 @@ bool LoFS::rmdir(const char *filepath, bool recursive)
     } else
 #endif
     {
-        // LittleFS
+        // Internal filesystem
         concurrency::LockGuard g(spiLock);
         result = FSCom.rmdir(strippedPath);
     }
@@ -584,7 +584,7 @@ uint64_t LoFS::totalBytes(const char *filepath)
     } else
 #endif
     {
-        // LittleFS
+        // Internal filesystem
         concurrency::LockGuard g(spiLock);
         result = FSCom.totalBytes();
     }
@@ -614,7 +614,7 @@ uint64_t LoFS::usedBytes(const char *filepath)
     } else
 #endif
     {
-        // LittleFS
+        // Internal filesystem
         concurrency::LockGuard g(spiLock);
         result = FSCom.usedBytes();
     }
