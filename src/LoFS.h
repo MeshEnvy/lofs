@@ -137,6 +137,14 @@ class LoFS
      */
     static uint64_t freeBytes(const char *filepath);
 
+    /**
+     * @brief Filesystem type constants for specifying which filesystem to use
+     */
+    enum FilesystemType {
+        LFS = 0,  ///< LittleFS (internal flash)
+        SD = 1    ///< SD Card (if available)
+    };
+
   private:
     enum class FSType { LFS, SD, INVALID };
 
