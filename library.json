@@ -1,0 +1,21 @@
+{
+  "name": "LoFS",
+  "version": "0.1.0",
+  "description": "Unified filesystem interface for Meshtastic-style firmware (internal flash via FSCommon + optional SD)",
+  "keywords": ["meshtastic", "filesystem", "sd", "littlefs"],
+  "authors": {
+    "name": "MeshEnvy",
+    "url": "https://github.com/MeshEnvy"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MeshEnvy/lofs.git"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/MeshEnvy/lofs",
+  "frameworks": "arduino",
+  "platforms": "*",
+  "build": {
+    "srcDir": "src"
+  }
+}

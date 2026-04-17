@@ -1,5 +1,7 @@
 #pragma once
 
+#define LOFS_VERSION "0.1.0"
+
 #include "FSCommon.h"
 #include "configuration.h"
 #include <Stream.h>
