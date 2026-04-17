@@ -1,6 +1,6 @@
 #pragma once
 
-#define LOFS_VERSION "0.1.0"
+#define LOFS_VERSION "0.1.1"
 
 #include "FSCommon.h"
 #include "configuration.h"

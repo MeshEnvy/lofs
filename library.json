@@ -1,6 +1,6 @@
 {
   "name": "LoFS",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Unified filesystem interface for Meshtastic-style firmware (internal flash via FSCommon + optional SD)",
   "keywords": ["meshtastic", "filesystem", "sd", "littlefs"],
   "authors": {
@@ -16,6 +16,7 @@
   "frameworks": "arduino",
   "platforms": "*",
   "build": {
-    "srcDir": "src"
+    "srcDir": "src",
+    "includeDir": "include"
   }
 }

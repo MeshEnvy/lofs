@@ -1,4 +1,4 @@
-#include "LoFS.h"
+#include <lofs/LoFS.h>
 #include "SPILock.h"
 #include "configuration.h"
 #include <string.h>

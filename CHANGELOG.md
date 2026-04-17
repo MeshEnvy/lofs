@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Public headers live under **`include/lofs/`** — use **`#include <lofs/LoFS.h>`** (or **`#include <lofs/lofs.h>`**); the implementation stays in **`src/LoFS.cpp`**.
 - Ship as a **PlatformIO library** (`library.json`); install via `lib_deps` instead of Mesh Plugin Manager.
 - Remove Meshtastic module / MPM surface (`plugin.h`, `MPM_REGISTER_MESHTASTIC_MODULE`).
 - Add `LOFS_VERSION` in `LoFS.h`.

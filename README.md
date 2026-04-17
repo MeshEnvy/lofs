@@ -47,16 +47,23 @@ pio pkg install -e <your_env>
 pio run -e <your_env>
 ```
 
-The library manifest is [`library.json`](library.json). Version in `library.json` should match `LOFS_VERSION` in [`src/LoFS.h`](src/LoFS.h).
+The library manifest is [`library.json`](library.json). Version in `library.json` should match `LOFS_VERSION` in [`include/lofs/LoFS.h`](include/lofs/LoFS.h).
 
 ## Usage
 
-Include the header and use static methods. No Meshtastic module registration is required.
+Include the public header (no `src/` path). Use either form:
+
+```cpp
+#include <lofs/LoFS.h>
+// or: #include <lofs/lofs.h>
+```
+
+Then use static methods on `LoFS`. No Meshtastic module registration is required.
 
 ### Basic operations
 
 ```cpp
-#include "LoFS.h"
+#include <lofs/LoFS.h>
 
 File f1 = LoFS::open("/internal/config/settings.txt", FILE_O_READ);
 File f2 = LoFS::open("/sd/data/log.txt", FILE_O_WRITE);
