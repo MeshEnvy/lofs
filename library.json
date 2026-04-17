@@ -4,8 +4,8 @@
   "description": "Unified filesystem interface for embedded Arduino firmware (internal flash via FSCommon + optional SD)",
   "keywords": ["meshtastic", "filesystem", "sd", "littlefs"],
   "authors": {
-    "name": "MeshEnvy",
-    "url": "https://github.com/MeshEnvy"
+    "name": "Ben Allfree",
+    "url": "https://github.com/benallfree"
   },
   "repository": {
     "type": "git",
