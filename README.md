@@ -21,7 +21,7 @@ Add LoFS as a dependency of your firmware project (any PlatformIO `arduino` envi
 
 ```ini
 lib_deps =
-  https://github.com/MeshEnvy/lofs.git#v0.1.1
+  https://github.com/MeshEnvy/lofs.git#v0.2.0
 ```
 
 Or track a branch:
@@ -51,11 +51,10 @@ The library manifest is [`library.json`](library.json). Version in `library.json
 
 ## Usage
 
-Include the public header (no `src/` path). Use either form:
+Include the public header (no `src/` path):
 
 ```cpp
 #include <lofs/LoFS.h>
-// or: #include <lofs/lofs.h>
 ```
 
 Then use static methods on `LoFS`.

@@ -7,9 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- Alternate public header **`lofs.h`** (case-only alias of **`LoFS.h`**). Use **`#include <lofs/LoFS.h>`** only.
+
 ### Changed
 
-- Public headers live under **`include/lofs/`** — use **`#include <lofs/LoFS.h>`** (or **`#include <lofs/lofs.h>`**); the implementation stays in **`src/LoFS.cpp`**.
+- Public headers live under **`include/lofs/`** — use **`#include <lofs/LoFS.h>`**; the implementation stays in **`src/LoFS.cpp`**.
 - Ship as a **PlatformIO library** (`library.json`); install via `lib_deps`.
 - Remove optional Meshtastic module packaging (`plugin.h`, module registration hook).
 - Add `LOFS_VERSION` in `LoFS.h`.
