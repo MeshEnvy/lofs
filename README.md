@@ -15,9 +15,9 @@ LoFS (LittleFS + SD card File System) provides a unified API that routes file op
 
 ## Installation
 
-### Using Mesh Forge (easy)
+### Using MeshForge (easy)
 
-Use our [Mesh Forge build profile](https://meshforge.org/builds/?plugin=lofs) to flash a LoFS-enabled version of Meshtastic to your device.
+Use our [MeshForge build profile](https://meshforge.org/builds/new/?plugin=lofs) to flash a LoFS-enabled version of Meshtastic to your device.
 
 ### Build it yourself
 
