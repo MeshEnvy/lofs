@@ -1,4 +1,4 @@
-# LoFS - Unified filesystem interface for Meshtastic-style firmware
+# LoFS - Unified filesystem interface for embedded firmware
 
 **A PlatformIO / Arduino library** that routes file operations to internal flash (via `FSCommon`) and optional SD card using path prefixes.
 
@@ -11,17 +11,17 @@ LoFS (LittleFS + SD card file system) provides one API for both backends. Paths 
 - **Cross-filesystem operations** — Rename/move across backends (copy + delete when needed)
 - **Unprefixed paths** — Treated as internal filesystem for compatibility
 - **SD detection** — Missing or unsupported SD is handled safely
-- **Targets** — Intended for ESP32, STM32WL, RP2040, and nRF52 in Meshtastic-like builds
+- **Targets** — Intended for ESP32, STM32WL, RP2040, and nRF52–class Arduino builds
 
 ## Installation (PlatformIO)
 
-Add LoFS as a dependency of your firmware project (e.g. [Meshtastic firmware](https://github.com/meshtastic/firmware)).
+Add LoFS as a dependency of your firmware project (any PlatformIO `arduino` environment that provides `FSCommon.h` / `configuration.h` from your tree).
 
 **From Git (pinned ref recommended):**
 
 ```ini
 lib_deps =
-  https://github.com/MeshEnvy/lofs.git#v0.1.0
+  https://github.com/MeshEnvy/lofs.git#v0.1.1
 ```
 
 Or track a branch:
@@ -58,7 +58,7 @@ Include the public header (no `src/` path). Use either form:
 // or: #include <lofs/lofs.h>
 ```
 
-Then use static methods on `LoFS`. No Meshtastic module registration is required.
+Then use static methods on `LoFS`.
 
 ### Basic operations
 
@@ -125,7 +125,7 @@ Operations **lazy-initialize** as needed (including SD on first access to `/sd/�
 - **Internal storage:** Uses `FSCom` from `FSCommon.h` (provided by the host firmware tree).
 - **SD:** Arduino `SD` library when `HAS_SDCARD` is defined and soft-SPI is not used.
 - **Concurrency:** SPI lock is used where appropriate for SD access.
-- **Build context:** This library expects Meshtastic-style headers and defines (`configuration.h`, `FSCommon.h`, `SPILock.h`, etc.) from the main firmware project.
+- **Build context:** This library expects your firmware to supply Meshtastic-compatible headers and defines (`configuration.h`, `FSCommon.h`, `SPILock.h`, etc.).
 
 ## License
 
